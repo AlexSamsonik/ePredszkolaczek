@@ -44,6 +44,7 @@ ignore = [
     "D105",  # Missing docstring in magic method
     "D107",  # Missing docstring in init
     "D401",  # First line of docstring should be in imperative mood: "{first_line}"
+    "S101",  # Use of `assert` detected
 ]
 
 [tool.ruff.lint.pydocstyle]
