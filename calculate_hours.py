@@ -1,12 +1,12 @@
 """There is main module to calculate actual the actual number of hours children are in kindergarten."""
 
 import logging
-from calendar import monthrange
-from datetime import date
 from os import environ
 
 from dotenv import load_dotenv
 from playwright.sync_api import sync_playwright, Playwright
+
+from src.helpers import get_first_and_last_day_of_month
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(format="%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)", level=logging.INFO)
@@ -62,31 +62,6 @@ def run(playwright: Playwright, date_from: str, date_to: str):
 
     browser.close()
     return presents
-
-
-def get_first_and_last_day_of_month(month: str | int | None = None):
-    """Calculate the first and last day of the specified month or the current month if no month is specified.
-
-    :param month: Optional; an integer (1-12) or a string representing the month. If not specified, the current month is used.
-    :return: A tuple containing two strings, the first and last day of the specified or current month in 'YYYY-MM-DD' format.
-    """
-    today = date.today()
-    year = today.year
-
-    if not month:
-        month = today.month
-    elif isinstance(month, str):
-        try:
-            month = int(month)
-        except ValueError:
-            raise ValueError("Month must be a number between 1 and 12")
-
-    if not 1 <= month <= 12:
-        raise ValueError("Month must be between 1 and 12")
-
-    first_day = date(year, month, 1)
-    last_day = date(year, month, monthrange(year, month)[1])
-    return first_day.strftime("%Y-%m-%d"), last_day.strftime("%Y-%m-%d")
 
 
 def main():
