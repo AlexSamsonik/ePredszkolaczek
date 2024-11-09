@@ -1,8 +1,7 @@
 """There is main module to calculate actual the actual number of hours children are in kindergarten."""
 
-import calendar
+from calendar import monthrange
 from datetime import date
-
 from os import environ
 
 from dotenv import load_dotenv
@@ -57,7 +56,7 @@ def get_first_and_last_day_of_current_month() -> tuple:
     """
     today = date.today()
     first_day = date(today.year, today.month, 1)
-    last_day = date(today.year, today.month, calendar.monthrange(today.year, today.month)[1])
+    last_day = date(today.year, today.month, monthrange(today.year, today.month)[1])
     return first_day.strftime("%Y-%m-%d"), last_day.strftime("%Y-%m-%d")
 
 
