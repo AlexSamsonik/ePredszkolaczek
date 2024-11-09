@@ -47,8 +47,13 @@ def run(playwright: Playwright, date_from: str, date_to: str):
     return presents
 
 
-if __name__ == "__main__":
+def main():
+    """The main function to execute script."""
     load_dotenv()
     with sync_playwright() as playwright:
         presents = run(playwright, "2024-10-01", "2024-10-30")
     print(presents)
+
+
+if __name__ == "__main__":
+    main()
