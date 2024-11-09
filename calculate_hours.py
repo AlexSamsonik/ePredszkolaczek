@@ -1,5 +1,8 @@
 """There is main module to calculate actual the actual number of hours children are in kindergarten."""
 
+import calendar
+from datetime import date
+
 from os import environ
 
 from dotenv import load_dotenv
@@ -47,11 +50,23 @@ def run(playwright: Playwright, date_from: str, date_to: str):
     return presents
 
 
+def get_first_and_last_day_of_current_month() -> tuple:
+    """Calculate the first and last day of the current month.
+
+    :return: A tuple containing two strings, the first and last day of the current month in 'YYYY-MM-DD' format.
+    """
+    today = date.today()
+    first_day = date(today.year, today.month, 1)
+    last_day = date(today.year, today.month, calendar.monthrange(today.year, today.month)[1])
+    return first_day.strftime("%Y-%m-%d"), last_day.strftime("%Y-%m-%d")
+
+
 def main():
     """The main function to execute script."""
     load_dotenv()
+    first_day, last_day = get_first_and_last_day_of_current_month()
     with sync_playwright() as playwright:
-        presents = run(playwright, "2024-10-01", "2024-10-30")
+        presents = run(playwright, first_day, last_day)
     print(presents)
 
 
