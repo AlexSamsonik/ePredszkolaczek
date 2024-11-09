@@ -1,0 +1,50 @@
+[tool.poetry]
+name = "ePredszkolaczek"
+version = "0.1.0"
+description = "A project to calculate the actual number of hours children are in kindergarten."
+authors = ["Aliaksandr Samsonik <aliaksandr.samsonik@gmail.com>"]
+readme = "README.md"
+packages = [{ include = "src" }]
+
+[tool.poetry.dependencies]
+pre-commit = "^3.7.0"
+python = "^3.12"
+ruff = "^0.6.2"
+pytest = "^8.3.3"
+playwright = "^1.48.0"
+python-dotenv = "^1.0.1"
+
+[tool.pytest.ini_options]
+log_cli = true
+log_cli_level = "INFO"
+log_cli_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+
+# Configuration for Ruff
+[tool.ruff]
+line-length = 120  # Allow lines to be as long as 120.
+target-version = "py312"  # Assume Python 3.12.
+show-fixes = true  # Enumerate all fixed violations.
+
+[tool.ruff.lint]
+fixable = ["ALL"]
+select = [
+    "D",  # pydocstyle
+    "D212",  # Multi-line docstring summary should start at the first line
+    "E101",  # Indentation contains mixed spaces and tabs
+    "E4",  # pycodestyle imports
+    "E7",  # pycodestyle
+    "E9",  # pycodestyle
+    "F",  # Pyflakes
+    "S",  # flake8-bandit
+    "W",  # pycodestyle warnings
+]
+ignore = [
+    "D104",  # Missing docstring in public package
+    "D105",  # Missing docstring in magic method
+    "D107",  # Missing docstring in init
+    "D401",  # First line of docstring should be in imperative mood: "{first_line}"
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"
