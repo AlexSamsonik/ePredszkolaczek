@@ -21,7 +21,7 @@ pip install poetry
 poetry install
 ```
 
-- Install pre-commit hooks
+- Install pre-commit hooks. (Optional. Only for development)
 ```sh
 pre-commit install
 ```
@@ -29,4 +29,14 @@ pre-commit install
 - Install playwright
 ```sh
 playwright install
+```
+
+- Running script without param (default)
+```sh
+python ./calculate_presenting_and_hours.py
+```
+
+- Running script with param '-m'. Calculate for specific month.
+```sh
+python ./calculate_presenting_and_hours.py -m 9  # will be calculate for September.
 ```
