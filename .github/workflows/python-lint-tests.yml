@@ -30,11 +30,6 @@ jobs:
         pip install poetry
         poetry install
 
-    - name: Set step-specific environment variables
-      env:
-        TIME_START: '08:00'
-        TIME_END: '13:00'
-
     - name: Lint with Ruff
       run: |
         ruff check
@@ -42,3 +37,6 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
+      env:
+        TIME_START: '08:00'
+        TIME_END: '13:00'
