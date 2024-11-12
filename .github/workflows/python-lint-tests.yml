@@ -30,9 +30,9 @@ jobs:
         pip install poetry
         poetry install
 
-#    - name: Lint with Ruff
-#      run: |
-#        poetry run ruff check
+    - name: Lint with Ruff
+      run: |
+        poetry run ruff check ./
 
     - name: Test with pytest
       run: |
