@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from playwright.sync_api import sync_playwright, Playwright
 
 from src.helpers import get_first_and_last_day_of_month
+from dataclasses import dataclass
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(format="%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)", level=logging.INFO)
@@ -64,13 +65,38 @@ def run(playwright: Playwright, date_from: str, date_to: str):
     return presents
 
 
+@dataclass
+class ActualPresent:
+    """Dataclass to storage actual presenting children in kindergarten."""
+
+    num: str
+    sur_name: str
+    first_name: str
+    unit: str
+    day: str
+    date_from: str
+    date_to: str
+
+
 def main():
     """The main function to execute script."""
     load_dotenv()
     first_day, last_day = get_first_and_last_day_of_month()
     with sync_playwright() as playwright:
         presents = run(playwright, first_day, last_day)
-    print(presents)
+
+    actual_presents: list[ActualPresent] = [ActualPresent(*presents[i : i + 7]) for i in range(0, len(presents), 7)]
+    wa_present: list[ActualPresent] = [ap for ap in actual_presents if ap.first_name == environ["WA_FIRST_NAME"]]
+    we_present: list[ActualPresent] = [ap for ap in actual_presents if ap.first_name == environ["WE_FIRST_NAME"]]
+
+    logger.info(f"{environ["WA_FIRST_NAME"]}. Days in kindergarten: '{len(wa_present)}'.")
+    logger.info(
+        f"{environ["WA_FIRST_NAME"]}. Payment for meals: '{len(wa_present) * int(environ["PAYMENT_FOR_MEALS_FOR_DAY"])}' zl."
+    )
+    logger.info(f"{environ["WE_FIRST_NAME"]}. Days in kindergarten: '{len(we_present)}'.")
+    logger.info(
+        f"{environ["WE_FIRST_NAME"]}. Payment for meals: '{len(we_present) * int(environ["PAYMENT_FOR_MEALS_FOR_DAY"])}' zl."
+    )
 
 
 if __name__ == "__main__":
