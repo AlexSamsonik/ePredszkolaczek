@@ -2,6 +2,9 @@
 
 from calendar import monthrange
 from datetime import date
+from datetime import datetime
+from math import ceil
+from os import environ
 from typing import Union, Tuple
 
 
@@ -37,3 +40,33 @@ def get_first_and_last_day_of_month(
     first_day = date(year, month, 1)
     last_day = date(year, month, monthrange(year, month)[1])
     return first_day.strftime("%Y-%m-%d"), last_day.strftime("%Y-%m-%d")
+
+
+def calculate_interval_hours(start_time, end_time) -> int:
+    """Calculate the total number of hours outside the interval for a given time range.
+
+    :param start_time: Start time in the format "HH:MM", representing the beginning of the interval.
+    :param end_time: End time in the format "HH:MM", representing the end of the interval.
+    :return: Total number of full hours outside the interval, rounded up to the nearest hour.
+    """
+    time_format = "%H:%M"
+
+    time_start_arrival = datetime.strptime(start_time, time_format)
+    time_end_arrival = datetime.strptime(end_time, time_format)
+
+    time_start = datetime.strptime(environ["TIME_START"], time_format)
+    time_end = datetime.strptime(environ["TIME_END"], time_format)
+
+    total_hours: int = 0
+
+    if time_start_arrival < time_start:
+        end_time = min(time_start, time_end_arrival)
+        delta = end_time - time_start_arrival
+        total_hours += ceil(delta.seconds / 3600)
+
+    if time_end_arrival > time_end:
+        start_time = max(time_end, time_start_arrival)
+        delta = time_end_arrival - start_time
+        total_hours += ceil(delta.seconds / 3600)
+
+    return total_hours
