@@ -23,22 +23,22 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: "3.12"
-        
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install poetry
         poetry install
-        
+
     - name: Set step-specific environment variables
       env:
         TIME_START: '08:00'
         TIME_END: '13:00'
-        
+
     - name: Lint with Ruff
       run: |
         ruff check
-        
+
     - name: Test with pytest
       run: |
         pytest
