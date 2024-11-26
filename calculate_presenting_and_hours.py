@@ -37,10 +37,12 @@ def print_calculation(first_name: str, presenting: list[ActualPresent]) -> None:
     hours = sum([(calculate_interval_hours(i.start_time, i.end_time)) for i in presenting])
 
     logger.info(f"{first_name}. Days in kindergarten: '{len(presenting)}'.")
-    logger.info(f"{first_name}. Payment for meals: '{len(presenting) * int(environ["PAYMENT_FOR_MEALS_FOR_DAY"])}' zl.")
+    rounded_meals_payment = round(len(presenting) * int(environ["PAYMENT_FOR_MEALS_FOR_DAY"]), 2)
+    logger.info(f"{first_name}. Payment for meals: '{'{:.2f}'.format(rounded_meals_payment)}' zl.")
 
     logger.info(f"{first_name}. Hours in kindergarten: '{hours}'.")
-    logger.info(f"{first_name}. Payment for hours: '{hours * float(environ["PAYMENT_FOR_HOUR"])}' zl.")
+    rounded_hours_payment = round(hours * float(environ["PAYMENT_FOR_HOUR"]), 2)
+    logger.info(f"{first_name}. Payment for hours: '{'{:.2f}'.format(rounded_hours_payment)}' zl.")
 
 
 def main(month: str):
