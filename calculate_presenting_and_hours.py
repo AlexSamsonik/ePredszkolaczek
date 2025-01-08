@@ -45,13 +45,14 @@ def print_calculation(first_name: str, presenting: list[ActualPresent]) -> None:
     logger.info(f"{first_name}. Payment for hours: '{'{:.2f}'.format(rounded_hours_payment)}' zl.")
 
 
-def main(month: str):
+def main(month: str, year: str):
     """The main function to execute script.
 
     :param month: Number of month from 1 to 12. If not specified, the current month is used.
+    :param year: The year for which the calculation is to be made. If not specified, the current year is used.
     """
     load_dotenv()
-    first_day, last_day = get_first_and_last_day_of_month(month)
+    first_day, last_day = get_first_and_last_day_of_month(month, year)
     with sync_playwright() as playwright:
         presents = run(playwright, first_day, last_day)
 
@@ -71,5 +72,11 @@ if __name__ == "__main__":
         help="Number of month. Please input number from 1 to 12. If not specified, the current month is used.",
         required=False,
     )
+    parser.add_argument(
+        "-y",
+        "--year",
+        help="The year for which the calculation is to be made. If not specified, the current year is used.",
+        required=False,
+    )
     args = parser.parse_args()
-    main(args.month)
+    main(args.month, args.year)
