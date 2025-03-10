@@ -43,19 +43,24 @@ def run(playwright: Playwright, date_from: str, date_to: str):
 
     # Count page in table
     pagination = page.locator("xpath=//ul[@class='pagination']").text_content()
-    pages_in_table = int(pagination.replace("»", "")[-1:])
-    logger.info(f"Found '{pages_in_table}' pages in 'Obecności' table.")
+    try:
+        pages_in_table = int(pagination.replace("»", "")[-1:])
+        logger.info(f"Found '{pages_in_table}' pages in 'Obecności' table.")
+    except ValueError:
+        pages_in_table = 0
+        logger.info(f"Found '{pages_in_table}' pages in 'Obecności' table.")
 
     presents = []
-    logger.info("Start collect information about actual presenting children in kindergarten.")
-    for i in range(pages_in_table):
-        rows = page.locator("//table[@class='table table-bordered']/tbody/tr/td")
-        for j in range(rows.count()):
-            presents.append(rows.nth(j).text_content().strip())
-        if i != pages_in_table - 1:
-            logger.info("Click '»' button.")
-            page.locator("xpath=//li[@class='PagedList-skipToNext']/a[@rel='next']").click()
-        page.wait_for_load_state()
+    if pages_in_table:
+        logger.info("Start collect information about actual presenting children in kindergarten.")
+        for i in range(pages_in_table):
+            rows = page.locator("//table[@class='table table-bordered']/tbody/tr/td")
+            for j in range(rows.count()):
+                presents.append(rows.nth(j).text_content().strip())
+            if i != pages_in_table - 1:
+                logger.info("Click '»' button.")
+                page.locator("xpath=//li[@class='PagedList-skipToNext']/a[@rel='next']").click()
+            page.wait_for_load_state()
 
     browser.close()
     return presents
