@@ -16,6 +16,11 @@ Running:
 poetry install
 ```
 
+- Install playwright
+ ```sh
+ playwright install
+ ```
+
 - Install pre-commit hooks. (Optional. Only for development)
 ```sh
 pre-commit install
@@ -26,7 +31,7 @@ pre-commit install
 poetry run python ./calculate_presenting_and_hours.py
 ```
 
-- Running script with param '-m' and '-y'. Calculate for specific month and year.
+- Running script with param '-m' and '-y'. Calculate for a specific month and year.
 ```sh
 poetry run python ./calculate_presenting_and_hours.py -m 2 -y 2025  # will be calculate for March 2025.
 ```
