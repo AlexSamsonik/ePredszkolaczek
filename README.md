@@ -1,22 +1,17 @@
 # ePredszkolaczek
 A project to calculate the actual number of hours children are in kindergarten.
 
-- Install Virtual Environment (venv):
+Requirement:
+ - Installed python version 3.12
+ - Installed poetry:
 ```sh
-python -m venv venv
+curl -sSL https://install.python-poetry.org | python3 -
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
 ```
 
-- Activate venv:
-```sh
-source venv/bin/activate
-```
+Running:
 
-- Install poetry
-```sh
-pip install poetry
-```
-
-- Install dependencies via poetry
+- Install poetry dependencies
 ```sh
 poetry install
 ```
@@ -26,17 +21,12 @@ poetry install
 pre-commit install
 ```
 
-- Install playwright
-```sh
-playwright install
-```
-
 - Running script without param (default)
 ```sh
-python ./calculate_presenting_and_hours.py
+poetry run python ./calculate_presenting_and_hours.py
 ```
 
-- Running script with param '-m'. Calculate for specific month.
+- Running script with param '-m' and '-y'. Calculate for specific month and year.
 ```sh
-python ./calculate_presenting_and_hours.py -m 9  # will be calculate for September.
+poetry run python ./calculate_presenting_and_hours.py -m 2 -y 2025  # will be calculate for March 2025.
 ```
