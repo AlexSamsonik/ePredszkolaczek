@@ -5,10 +5,9 @@ from os import environ
 from time import sleep
 from playwright.sync_api import Playwright
 
+
 logger = logging.getLogger(__name__)
 logging.basicConfig(format="%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)", level=logging.INFO)
-
-children_ids = [environ["WA_ID"], environ["WE_ID"]]
 
 
 def select_element(locator, option, page) -> None:
@@ -52,7 +51,7 @@ def run(playwright: Playwright, month: str, year: str) -> dict:
 
     presents = {}
     logger.info("Start collect information about actual presenting children in kindergarten.")
-    for child_id in children_ids:
+    for child_id in [environ["WA_ID"], environ["WE_ID"]]:
         presents.update({child_id: []})
 
         logger.info("Wybierz dziecko.")
