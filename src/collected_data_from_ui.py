@@ -22,13 +22,13 @@ def run(playwright: Playwright, date_from: str, date_to: str):
     page = browser.new_page()
 
     # Login to the kindergarten application
-    logger.info(f"Goto url: {environ["URL"]}.")
+    logger.info(f"Goto url: {environ['URL']}.")
     page.goto(environ["URL"])
-    logger.info("Input email: *** .")
-    page.locator("xpath=//*[@type='email']").fill(environ["EMAIL"])
-    logger.info("Input password: *** .")
-    page.locator("xpath=//*[@type='password']").fill(environ["PASSWORD"])
-    logger.info("Click 'Submit' button.")
+    logger.info("Input 'Nazwa uzytkownika': *** .")
+    page.locator("xpath=//*[@id='Username']").fill(environ["USER_NAME"])
+    logger.info("Input 'Haslo': *** .")
+    page.locator("xpath=//*[@id='Password']").fill(environ["PASSWORD"])
+    logger.info("Click 'Zaloguj sie' button.")
     page.locator("xpath=//*[@type='submit']").click()
     page.wait_for_load_state()
 
