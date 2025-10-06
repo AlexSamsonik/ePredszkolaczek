@@ -32,6 +32,7 @@ load_dotenv()
         ("07:59", "08:01", 1),
         ("12:59", "13:02", 1),
         ("08:04", "14:09", 2),
+        ("14:31", "14:35", 1),
     ],
 )
 def test_calculate_interval_hours(start_time, end_time, expected_hours):
