@@ -9,14 +9,15 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(format="%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)", level=logging.INFO)
 
 
-def run(playwright: Playwright) -> list:
+def run(playwright: Playwright, headless: bool = True) -> list:
     """Running Playwright, log in to web application and return list with cookies.
 
     :param playwright: Playwright instance.
+    :param headless: Headless mode for launch browser.
     :return: List of cookies.
     """
     logger.info("Playwright launch.")
-    browser = playwright.firefox.launch(headless=False)  # launch(headless=False) for debugging
+    browser = playwright.firefox.launch(headless=headless)  # launch(headless=False) for debugging
     page = browser.new_page()
 
     # Login to the kindergarten application
