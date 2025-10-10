@@ -1,12 +1,8 @@
 """There is module to provide functions to collecting data from UI."""
 
-import logging
 from os import environ
 
 from requests import Session
-
-logger = logging.getLogger(__name__)
-logging.basicConfig(format="%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)", level=logging.INFO)
 
 
 def get_obecnosci(child_id: str, month: str, year: str, cookies: str) -> dict:
