@@ -90,3 +90,31 @@ def compose_string_from_dict_list(dict_list, field_order):
     result = "; ".join(result_parts)
 
     return result
+
+
+def extract_entrance_exit_times(attendance_data: dict) -> list:
+    """Extract entrance and exit times from the attendance response.
+
+    :param attendance_data: Dictionary containing attendance data.
+    :return: List of dictionaries, each containing 'Wejscie' (entrance) and 'Wyjscie' (exit) times.
+    """
+    # Initialize the result list
+    result = []
+
+    # Extract the 'Obecnosci' dictionary from the attendance data
+    obecnosci = attendance_data.get("d", {}).get("Obecnosci", {})
+
+    # Iterate through each entry in 'Obecnosci'
+    for day_key, day_data in obecnosci.items():
+        # Extract the entrance and exit times
+        entrance = day_data.get("Wejscie", "-")
+        exit_time = day_data.get("Wyjscie", "-")
+
+        # Skip entries where either entrance or exit time is '-'
+        if entrance == "-" or exit_time == "-":
+            continue
+
+        # Add a dictionary with the extracted times to the result list
+        result.append({"Wejscie": entrance, "Wyjscie": exit_time})
+
+    return result

@@ -2,7 +2,7 @@
 
 import pytest
 from re import escape
-from src.helpers import calculate_interval_hours, compose_string_from_dict_list
+from src.helpers import calculate_interval_hours, compose_string_from_dict_list, extract_entrance_exit_times
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -154,3 +154,66 @@ def test_compose_string_failure_cases(dict_list, field_order, exception_msg):
     """
     with pytest.raises(ValueError, match=escape(exception_msg)):
         compose_string_from_dict_list(dict_list, field_order)
+
+
+@pytest.mark.parametrize(
+    "attendance_data, expected_result",
+    [
+        # Test 1: Empty attendance_data dictionary
+        ({}, []),
+        # Test 2: attendance_data contains empty 'd' dictionary
+        ({"d": {}}, []),
+        # Test 3: attendance_data['d'] contains empty 'Obecnosci' dictionary
+        ({"d": {"Obecnosci": {}}}, []),
+        # Test 4: 'Obecnosci' contains one entry with valid entrance and exit times
+        (
+            {"d": {"Obecnosci": {"2023-09-15": {"Wejscie": "08:00", "Wyjscie": "17:00"}}}},
+            [{"Wejscie": "08:00", "Wyjscie": "17:00"}],
+        ),
+        # Test 5: 'Obecnosci' contains multiple entries with valid entrance and exit times
+        (
+            {
+                "d": {
+                    "Obecnosci": {
+                        "2023-09-15": {"Wejscie": "08:00", "Wyjscie": "17:00"},
+                        "2023-09-16": {"Wejscie": "09:00", "Wyjscie": "18:00"},
+                    }
+                }
+            },
+            [{"Wejscie": "08:00", "Wyjscie": "17:00"}, {"Wejscie": "09:00", "Wyjscie": "18:00"}],
+        ),
+        # Test 6: 'Obecnosci' contains one entry, but entrance time is '-'
+        ({"d": {"Obecnosci": {"2023-09-15": {"Wejscie": "-", "Wyjscie": "17:00"}}}}, []),
+        # Test 7: 'Obecnosci' contains one entry, but exit time is '-'
+        ({"d": {"Obecnosci": {"2023-09-15": {"Wejscie": "08:00", "Wyjscie": "-"}}}}, []),
+        # Test 8: 'Obecnosci' contains multiple entries, some with entrance or exit time equal to '-'
+        (
+            {
+                "d": {
+                    "Obecnosci": {
+                        "2023-09-15": {"Wejscie": "08:00", "Wyjscie": "17:00"},
+                        "2023-09-16": {"Wejscie": "-", "Wyjscie": "18:00"},
+                        "2023-09-17": {"Wejscie": "09:00", "Wyjscie": "-"},
+                    }
+                }
+            },
+            [{"Wejscie": "08:00", "Wyjscie": "17:00"}],
+        ),
+        # Test 9: 'Obecnosci' contains an entry with missing 'Wejscie' and 'Wyjscie' keys
+        ({"d": {"Obecnosci": {"2023-09-15": {}}}}, []),
+        # Test 10: 'Obecnosci' contains an entry with additional keys
+        (
+            {"d": {"Obecnosci": {"2023-09-15": {"Wejscie": "08:00", "Wyjscie": "17:00", "Extra": "value"}}}},
+            [{"Wejscie": "08:00", "Wyjscie": "17:00"}],
+        ),
+    ],
+)
+def test_extract_entrance_exit_times(attendance_data, expected_result):
+    """Test the extract_entrance_exit_times function with various input scenarios."""
+    result = extract_entrance_exit_times(attendance_data)
+
+    # Sort the lists for correct comparison, as the order may differ
+    sorted_result = sorted(result, key=lambda d: (d["Wejscie"], d["Wyjscie"]))
+    sorted_expected_result = sorted(expected_result, key=lambda d: (d["Wejscie"], d["Wyjscie"]))
+
+    assert sorted_result == sorted_expected_result
