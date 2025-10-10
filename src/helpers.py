@@ -40,13 +40,13 @@ def calculate_interval_hours(start_time, end_time) -> int:
     return total_hours
 
 
-def print_calculation(first_name: str, presenting: dict) -> None:
+def print_calculation(first_name: str, presenting: list) -> None:
     """Calculate and log the total days, meal payments, hours, and hour payments for a child in kindergarten.
 
     :param first_name: The first name of the child.
-    :param presenting: Dictionary with actual start_time and end_time for each day.
+    :param presenting: List of dictionaries, each containing 'Wejscie' (entrance) and 'Wyjscie' (exit) times.
     """
-    hours = sum([(calculate_interval_hours(i["start_time"], i["end_time"])) for i in presenting])
+    hours = sum([(calculate_interval_hours(i["Wejscie"], i["Wyjscie"])) for i in presenting])
 
     logger.info(f"{first_name}. Days in kindergarten: '{len(presenting)}'.")
     rounded_meals_payment = round(len(presenting) * int(environ["PAYMENT_FOR_MEALS_FOR_DAY"]), 2)
@@ -55,3 +55,66 @@ def print_calculation(first_name: str, presenting: dict) -> None:
     logger.info(f"{first_name}. Hours in kindergarten: '{hours}'.")
     rounded_hours_payment = round(hours * float(environ["PAYMENT_FOR_HOUR"]), 2)
     logger.info(f"{first_name}. Payment for hours: '{'{:.2f}'.format(rounded_hours_payment)}' zl.")
+
+
+def compose_string_from_dict_list(dict_list, field_order):
+    """Composes a formatted string from values of specified keys in the given order.
+
+    Format for result string: "field1=value1; field2=value2; field3=value3"
+
+    :param dict_list: List of dictionaries (e.g. [{"name": "field_01", "value": "Value_01", "others": "values"})
+    :param field_order: List of field names in the required order (e.g. ["field_01", "field_02", "field_03"])
+
+    :raise ValueError: If any of the required keys is missing in the list of dictionaries
+    :return: String composed of corresponding key-value pairs in the required format
+    """
+    # Initialize a dictionary to store found values
+    field_values = {field: None for field in field_order}
+
+    # Find the required keys in dictionaries
+    for d in dict_list:
+        if d.get("name") in field_order:
+            field_values[d["name"]] = d["value"]
+
+    # Check that all keys were found
+    missing_fields = [field for field in field_order if field_values[field] is None]
+    if missing_fields:
+        raise ValueError(f"Keys '{missing_fields}' not found in any dictionary.")
+
+    # Compose the string in the required order with proper formatting
+    result_parts = []
+    for field in field_order:
+        result_parts.append(f"{field}={field_values[field]}")
+
+    # Join with the specified separator
+    result = "; ".join(result_parts)
+
+    return result
+
+
+def extract_entrance_exit_times(attendance_data: dict) -> list:
+    """Extract entrance and exit times from the attendance response.
+
+    :param attendance_data: Dictionary containing attendance data.
+    :return: List of dictionaries, each containing 'Wejscie' (entrance) and 'Wyjscie' (exit) times.
+    """
+    # Initialize the result list
+    result = []
+
+    # Extract the 'Obecnosci' dictionary from the attendance data
+    obecnosci = attendance_data.get("d", {}).get("Obecnosci", {})
+
+    # Iterate through each entry in 'Obecnosci'
+    for day_key, day_data in obecnosci.items():
+        # Extract the entrance and exit times
+        entrance = day_data.get("Wejscie", "-")
+        exit_time = day_data.get("Wyjscie", "-")
+
+        # Skip entries where either entrance or exit time is '-'
+        if entrance == "-" or exit_time == "-":
+            continue
+
+        # Add a dictionary with the extracted times to the result list
+        result.append({"Wejscie": entrance, "Wyjscie": exit_time})
+
+    return result
